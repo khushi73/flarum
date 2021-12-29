@@ -24,7 +24,7 @@ Read the **[Installation guide](https://docs.flarum.org/install)** to get starte
 
 ## Contributing
 
-Thank you for considering contributing to Flarum! Please read the **[Contributing guide](https://docs.flarum.org/contributing)** to learn how you can help.
+Thank you for considering contributing to Flarum_prod,develop,test! Please read the **[Contributing guide](https://docs.flarum.org/contributing)** to learn how you can help.
 
 This repository only holds the Flarum skeleton application. Most development happens in [flarum/core](https://github.com/flarum/core).
 

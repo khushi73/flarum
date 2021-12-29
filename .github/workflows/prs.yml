@@ -1,0 +1,59 @@
+name: Laravel
+
+on:
+   pull_request:
+    branches:
+      - prod
+      - develop
+      - test
+   push:
+     branches:
+       - prod
+       - develop
+       - test
+   
+jobs:
+  laravel-tests:
+
+    runs-on: ubuntu-latest    
+    steps:   
+    - uses: shivammathur/setup-php@15c43e89cdef867065b0213be354c2841860869e
+      with:
+        php-version: '7.4'
+
+    - uses: actions/checkout@v2
+    - name: composer update
+      run: composer update -n
+    - name: Install Dependencies
+      run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
+    - name: Directory Permissions
+      run: chmod -R 777 storage bootstrap/cache
+     
+  deploy-to-test:
+ 
+    if: github.ref == 'refs/heads/test'
+    needs: [laravel-tests]
+    runs-on: ubuntu-latest
+    steps:
+    - name: Deploy to test
+      uses: appleboy/ssh-action@master
+      with:
+        username: root
+        host: 68.183.88.222
+        password: ${{ secrets.SSH_PASSWORD }}
+        script: 'cd /var/www/flarum_test && ./server_deploy.sh'
+
+       
+  deploy_to_production:
+    
+     if: github.ref == 'refs/heads/prod'
+     needs: [laravel-tests]
+     runs-on: ubuntu-latest
+     steps:   
+     - name: Deploy to prod
+       uses: appleboy/ssh-action@master
+       with:
+        username: root
+        host: 68.183.88.222
+        password: ${{ secrets.SSH_PASSWORD }}
+        script: 'cd /var/www/flarum_prod && ./server_deploy.sh'
